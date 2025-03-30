@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donate Clothes</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Fullscreen Background Image */
+        #full-screen-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            object-fit: cover;
+        }
+
+        /* Make Form Completely Transparent */
+        .transparent-form {
+            background: none !important;
+            box-shadow: none !important;
+            border: none !important;
+        }
+
+        /* Transparent Input Fields */
+        .form-input {
+            background: none !important;
+            border: 1px solid rgba(230, 30, 63, 0.5); /* Light border for visibility */
+            color: rgb(209, 15, 41) !important;
+        }
+
+        /* Placeholder Text Color */
+        .form-input::placeholder {
+            color: rgba(54, 18, 187, 0.7);
+        }
+
+        /* Transparent Button */
+        .btn-submit {
+            background: blue !important;
+            border: 2px solid rgb(30, 30, 199);
+            color: white;
+            transition: background 0.3s ease;
+        }
+
+        /* Button Hover Effect */
+        .btn-submit:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+    </style>
+    <script>
+        function showPopup(event) {
+            event.preventDefault(); // Prevents page reload on form submission
+            alert("Donation successful!");
+            document.getElementById("donationForm").reset(); // Clears form after submission
+        }
+    </script>
+</head>
+<body class="text-white font-sans">
+    <!-- Background Image -->
+    <img id="full-screen-image" src="img 2.html" alt="Background Image"> 
+
+    <!-- Transparent Form Container -->
+    <div class="max-w-md mx-auto py-8 px-4 transparent-form"> <!-- Reduced container size -->
+        <header class="text-center mb-6">
+            <h1 class="text-2xl font-bold text-blue-500">Donate Clothes</h1>
+            <p class="mt-1 text-blue-300">Fill out the form below to donate your clothes.</p>
+        </header>
+
+        <!-- Form -->
+        <form id="donationForm" class="space-y-4" onsubmit="showPopup(event)">
+            <div>
+                <label for="name" class="block font-medium">Your Name:</label>
+                <input type="text" id="name" class="form-input w-full mt-1 p-2 rounded-md" placeholder="John Doe" required>
+            </div>
+
+            <div>
+                <label for="email" class="block font-medium">Email Address:</label>
+                <input type="email" id="email" class="form-input w-full mt-1 p-2 rounded-md" placeholder="john.doe@example.com" required>
+            </div>
+
+            <div>
+                <label for="clothes-type" class="block font-medium">Type of Clothes:</label>
+                <input type="text" id="clothes-type" class="form-input w-full mt-1 p-2 rounded-md" placeholder="Shirts, Jeans, etc." required>
+            </div>
+
+            <div>
+                <label for="quantity" class="block font-medium">Quantity:</label>
+                <input type="number" id="quantity" class="form-input w-full mt-1 p-2 rounded-md" placeholder="Number of items" required>
+            </div>
+
+            <div>
+                <label for="address" class="block font-medium">Pickup Address:</label>
+                <textarea id="address" class="form-input w-full mt-1 p-2 rounded-md" placeholder="123 Main Street, City" rows="2" required></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit w-full p-2 rounded-md">Submit Donation</button>
+        </form>
+    </div>
+</body>
+</html>

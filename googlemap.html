@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Maps Integration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 30px;
+        }
+
+        .search-bar {
+            flex-grow: 1;
+            max-width: 600px;
+            margin: 0 20px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px 15px;
+            border-radius: 24px;
+            border: 1px solid #dfe1e5;
+            font-size: 16px;
+            padding-left: 40px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9aa0a6;
+        }
+
+        /* Map Container */
+        #map {
+            flex-grow: 1;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Map Controls */
+        .map-controls {
+            position: absolute;
+            right: 20px;
+            bottom: 100px;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+        }
+
+        .control-button {
+            width: 40px;
+            height: 40px;
+            background-color: white;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            cursor: pointer;
+            color: #5f6368;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <img src="https://www.google.com/images/branding/product/1x/maps_32dp.png" alt="Google Maps Logo">
+            <span>Maps</span>
+        </div>
+        <div class="search-bar">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="search-input" placeholder="Search Google Maps">
+        </div>
+    </div>
+
+    <div id="map"></div>
+
+    <!-- Load Google Maps API -->
+    <script>
+        // Initialize and add the map
+        function initMap() {
+            // Default location (New York)
+            const defaultLocation = { lat: 40.7128, lng: -74.0060 };
+            
+            // Create map
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 12,
+                center: defaultLocation,
+                mapTypeControl: false,
+                streetViewControl: false,
+                fullscreenControl: false
+            });
+
+            // Add search functionality
+            const searchInput = document.getElementById('search-input');
+            const searchBox = new google.maps.places.SearchBox(searchInput);
+
+            map.addListener('bounds_changed', function() {
+                searchBox.setBounds(map.getBounds());
+            });
+
+            // Listen for selection of a place
+            searchBox.addListener('places_changed', function() {
+                const places = searchBox.getPlaces();
+
+                if (places.length === 0) {
+                    return;
+                }
+
+                // Clear existing markers
+                const markers = [];
+                
+                // For each place, add a marker
+                const bounds = new google.maps.LatLngBounds();
+                places.forEach(place => {
+                    if (!place.geometry) {
+                        console.log("Returned place contains no geometry");
+                        return;
+                    }
+                    
+                    // Create marker
+                    markers.push(new google.maps.Marker({
+                        map,
+                        title: place.name,
+                        position: place.geometry.location
+                    }));
+
+                    if (place.geometry.viewport) {
+                        bounds.union(place.geometry.viewport);
+                    } else {
+                        bounds.extend(place.geometry.location);
+                    }
+                });
+                map.fitBounds(bounds);
+            });
+
+            // Add current location button
+            const locationButton = document.createElement("div");
+            locationButton.className = "control-button";
+            locationButton.textContent = "📍";
+            locationButton.title = "Find My Location";
+            
+            locationButton.addEventListener("click", () => {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            const pos = {
+                                lat: position.coords.latitude,
+                                lng: position.coords.longitude,
+                            };
+                            
+                            new google.maps.Marker({
+                                position: pos,
+                                map,
+                                title: "Your Location",
+                            });
+                            
+                            map.setCenter(pos);
+                            map.setZoom(15);
+                        },
+                        () => {
+                            alert("Error: The Geolocation service failed or your browser doesn't support geolocation.");
+                        }
+                    );
+                } else {
+                    alert("Error: Your browser doesn't support geolocation.");
+                }
+            });
+            
+            // Add control to map
+            map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(locationButton);
+        }
+    </script>
+    
+    <!-- Load Google Maps API with your API key -->
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initMap">
+    </script>
+</body>
+</html>

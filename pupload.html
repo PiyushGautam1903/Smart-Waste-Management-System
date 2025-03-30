@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Upload</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        .container { max-width: 500px; margin: auto; }
+        .upload-section { margin-top: 20px; }
+        .image-preview { margin-top: 20px; }
+        img { max-width: 100%; height: auto; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h2>Upload Your Photo</h2>
+    <div class="container">
+        <label for="fileInput">Choose a photo:</label>
+        <input type="file" id="fileInput" accept="image/*" onchange="previewImage()">
+        <br><br>
+        <button onclick="uploadPhoto()">Upload to All</button>
+        
+        <div class="image-preview" id="imagePreview"></div>
+        
+        <h3>Uploaded Images</h3>
+        <div id="uploadedImages">
+            <h4>Fertilizer Company</h4>
+            <div id="fertilizer"></div>
+            <h4>Recycle Company</h4>
+            <div id="recycle"></div>
+            <h4>Municipal Party</h4>
+            <div id="municipal"></div>
+        </div>
+    </div>
+
+    <script>
+        function previewImage() {
+            let fileInput = document.getElementById('fileInput');
+            let imagePreview = document.getElementById('imagePreview');
+            imagePreview.innerHTML = "";
+            if (fileInput.files.length > 0) {
+                let img = document.createElement('img');
+                img.src = URL.createObjectURL(fileInput.files[0]);
+                imagePreview.appendChild(img);
+            }
+        }
+        
+        function uploadPhoto() {
+            let fileInput = document.getElementById('fileInput');
+            if (fileInput.files.length === 0) {
+                alert("Please select a photo to upload.");
+                return;
+            }
+            let img = document.createElement('img');
+            img.src = URL.createObjectURL(fileInput.files[0]);
+            document.getElementById('fertilizer').appendChild(img.cloneNode());
+            document.getElementById('recycle').appendChild(img.cloneNode());
+            document.getElementById('municipal').appendChild(img.cloneNode());
+            alert("Photo uploaded to all sections successfully!");
+        }
+    </script>
+</body>
+</html>
